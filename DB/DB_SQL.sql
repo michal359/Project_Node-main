@@ -28,7 +28,7 @@ create table addresses (
 
 create table passwords ( 
   id INT NOT NULL PRIMARY KEY,
-  password varchar(8),
+  password varchar(255),
   FOREIGN KEY (id) REFERENCES users (id)
 );
 

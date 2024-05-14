@@ -1,16 +1,16 @@
 const express = require("express");
 const model = require('../model/usersModel');
-// const bcrypt = require('bcrypt')
-// const crypto = require('crypto')
+const bcrypt = require('bcrypt')
+const crypto = require('crypto')
 
 const router = express.Router();
 const cors = require('cors');
 router.use(cors());
 async function create(username, password) {
     try {
-        // const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
-        // console.log(hashedPassword);
-        return model.createUser(username, password);
+        const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+        console.log(hashedPassword);
+        return model.createUser(username, hashedPassword);
     } catch (err) {
         throw err;
     }
@@ -24,20 +24,22 @@ async function login(username, password) {
             throw new Error('User not exist');
         } else {
             const passwordUser = await model.getPassword(user.id);
-            if (password == passwordUser.password) {
-                return user;
-            }
-            else {
-                throw new Error('Passwords are not matching');
-            }
-            // bcrypt.compare(password,passwordUser.password).then(result=>{
-            //     if(result)
-            //     {
-            //         return user;
-            //     }else{
-            //         throw new Error('Passwords are not matching');
-            //     }
-            // })
+            // if (password == passwordUser.password) {
+            //     return user;
+            // }
+            // else {
+            //     throw new Error('Passwords are not matching');
+            // }
+            console.log("pas",passwordUser)
+            const response=bcrypt.compare(password,passwordUser.password)
+                if(response)
+                {
+                    console.log("u",user)
+                    return user;
+                }else{
+                    throw new Error('Passwords are not matching');
+                }
+           
 
         }
     } catch (err) {

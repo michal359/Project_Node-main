@@ -34,11 +34,11 @@ const Login = ({ setUserData }) => {
         serverRequests('POST', 'login', formData)
         .then((user) => {
           if (user) {
-            console.log('User data:', user); 
-            setUserData(user);
-            alert(`Login successful! Welcome back ${user.username}😎`);
-            localStorage.setItem('loggedInUser', JSON.stringify(user));
-            console.log('Stored user data:', user); 
+            console.log('User data:', user[0]); 
+            setUserData(user[0]);
+            alert(`Login successful! Welcome back ${user[0].username}😎`);
+            localStorage.setItem('loggedInUser', JSON.stringify(user[0]));
+            console.log('Stored user data:', user[0]); 
             navigate(`/home`);
           } else {
             alert("Login failed. Invalid username or password.");

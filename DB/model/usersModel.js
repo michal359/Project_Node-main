@@ -28,7 +28,7 @@ async function getByQuery(query) {
 async function getUser(id) {
     try {
         console.log(id)
-        const sql = 'SELECT * FROM users  where id=?';
+        const sql = 'SELECT * FROM users NATURAL JOIN addresses where id=?';
         const result = await pool.query(sql, [id]);
         console.log(result)
         return result[0];
