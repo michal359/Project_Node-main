@@ -10,6 +10,7 @@ function AlbumDetails() {
     const AlbumsData = useContext(AlbumsContext);
 
     const [photosData, setPhotosData] = useState([]);
+    const [totalPhotosCount, setTotalPhotosCount] = useState(0);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [photosPerPage] = useState(10);
@@ -24,15 +25,20 @@ function AlbumDetails() {
     useEffect(() => {
         const fetchAlbumPhotos = async () => {
             try {
-                const response = serverRequests('GET', `photos?album_id=${albumId}&_page=${currentPage}&_limit=${photosPerPage}`, null)
-                
-                    const totalCountHeader = JSON.stringify(response).headers.get('x-total-count');
-                    const totalPhotosCount = totalCountHeader ? parseInt(totalCountHeader, 10) : 0;
+              
+                    const response = await fetch(`http://localhost:3000/photos?album_id=${albumId}&_page=${currentPage}&_limit=${photosPerPage}`)
+                    if (response.ok) {
+                    const totalCountHeader = (response).headers.get('x-total-count');
+                    setTotalPhotosCount(totalCountHeader ? parseInt(totalCountHeader, 10) : 0);
                     setTotalPages(Math.ceil(totalPhotosCount / photosPerPage));
-
                     const currentAlbumPhotos = await response.json();
                     setPhotosData(currentAlbumPhotos);
                     setLoading(false);
+                    } else {
+                        console.error('Failed:', fetchResponse.statusText);
+                    }
+                
+                    
                 
 
             } catch (error) {
@@ -45,8 +51,12 @@ function AlbumDetails() {
     }, [albumId, currentPage, photosPerPage]);
 
     const loadMorePhotos = () => {
-        setCurrentPage((prevPage) => prevPage + 1);
-        setLoading(true);
+        if(currentPage<totalPages)
+            {
+                setCurrentPage((prevPage) => prevPage + 1);
+                setLoading(true);
+            }
+        
     };
 
     const loadPrevPhotos = () => {
@@ -58,12 +68,13 @@ function AlbumDetails() {
 
     const deletePhoto = async (photoId) => {
         try {
-            const response = serverRequests('DELETE', `photos/${photoId}`, null);
-            if (response.ok) {
+            const findPhoto=photosData.find((photo) => photo.id === photoId) ;
+            serverRequests('DELETE', `photos/${photoId}`, findPhoto)
+            .then(()=>{
                 setPhotosData((prevPhotos) => prevPhotos.filter((photo) => photo.id !== photoId));
-            } else {
-                console.error('Failed to delete photo:', response.statusText);
-            }
+            })
+            
+            
         } catch (error) {
             console.error('Error deleting photo:', error);
         }
@@ -80,9 +91,9 @@ function AlbumDetails() {
 
         try {
             serverRequests('POST', `photos`, photoToAdd).then((newPhoto) => {
-                if (currentPage === totalPages) {
+               
                     setPhotosData((prevPhotos) => [...prevPhotos, newPhoto]);
-                }
+                
                 setNewPhotoUrl('');
                 setNewPhotoTitle('');
                 setTotalPages(Math.ceil((totalPhotosCount + 1) / photosPerPage));
@@ -107,18 +118,24 @@ function AlbumDetails() {
     };
 
     const saveEditedTitle = async (photoId) => {
+        const findPhoto=photosData.find((photo) => photo.id === photoId) ;
 
         const updatePhoto = {
-            title: editedTitles[photoId] || ''
+            id:photoId,
+            title: editedTitles[photoId] || '',
+            url:findPhoto.url,
+            thumbnailUrl:findPhoto.thumbnailUrl
         }
 
         try {
-            serverRequests('PATCH', `photos/${photoId}`, updatePhoto).then(() => {
+            serverRequests('PUT', `photos/${photoId}`, updatePhoto).then((response) => {
+               console.log("p",response)
                 setPhotosData((prevPhotos) =>
-                    prevPhotos.map((photo) =>
-                        photo.id === photoId ? { ...photo, updatePhoto } : photo
-                    )
+                     prevPhotos.map((photo) =>
+                         photo.id === photoId ? { ...photo, response } : photo
+                   )
                 );
+                
                 toggleEditField(photoId);
             })
         } catch (error) {
@@ -163,8 +180,8 @@ function AlbumDetails() {
                     ) : (
                         <div>
                             <div className='photos'>
-                                {photosData.map((photo) => (
-                                    <div key={photo.id}>
+                                {photosData.map((photo,key) => (
+                                    <div key={key}>
                                         <img src={photo.thumbnailUrl} alt={photo.title} />
 
                                         {showEditFields[photo.id] ? (

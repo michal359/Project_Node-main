@@ -8,6 +8,15 @@ async function create(album_id, title, url, thumbnailUrl){
     }
     
 }
+
+async function getByQuery(query){
+    try{
+        return model.getByQuery(query);
+    }catch(err){
+        throw err;
+    }
+}
+
 async function getAll(){
     try{
         return model.getPhotos();
@@ -40,4 +49,4 @@ async function update(id, title, url, thumbnailUrl){
     }
 }
 
-module.exports = {create, getAll, getById, deletePhoto, update}
+module.exports = {create, getAll, getById, deletePhoto, update,getByQuery}

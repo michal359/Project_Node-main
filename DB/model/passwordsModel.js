@@ -5,11 +5,11 @@ async function getPasswords() {
         const sql = 'SELECT * FROM passwords';
 
         const [rows, fields] = await pool.query(sql);
-        console.log(rows);
 
         return rows;
     } catch (err) {
         console.log(err);
+        throw err;
     }
 
 }
@@ -24,6 +24,7 @@ async function getPassword(id) {
 
     } catch (err) {
         console.log(err);
+        throw err;
     }
 }
 
@@ -38,6 +39,7 @@ async function createPassword(user_id, password) {
   
     } catch (err) {
       console.log(err);
+      throw err;
     }
   }
   async function deletePassword(id) {

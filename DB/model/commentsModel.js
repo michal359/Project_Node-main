@@ -42,11 +42,8 @@ async function getComment(id) {
 async function createComment(post_id, name, email, body) {
   try {
     const sql = "INSERT INTO comments (`post_id`, `name`,`email`, `body`) VALUES(?, ?, ?, ?)";
-    
     const result = await pool.query(sql, [post_id, name, email, body]);
-
     return result[0];
-
   } catch (err) {
     console.log(err);
   }
@@ -64,7 +61,7 @@ async function updateComment(id, body,name) {
   try {
     const sql = `UPDATE comments SET name = ?,body=? WHERE id = ?`;
     const result = await pool.query(sql, [name,body, id]);
-    return result;
+    return await getComment(id);
   } catch (err) {
     console.error('Error updating comment:', err);
     throw err;

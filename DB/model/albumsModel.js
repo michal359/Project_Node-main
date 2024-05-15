@@ -5,12 +5,23 @@ async function getAlbums() {
         const sql = 'SELECT * FROM albums';
 
         const [rows, fields] = await pool.query(sql);
-        console.log(rows);
-
         return rows;
     } catch (err) {
         console.log(err);
+        throw err;
     }
+
+}
+
+async function getByQuery(query) {
+  try {
+      const sql = 'SELECT * FROM albums where ?';
+      const [rows, fields] = await pool.query(sql,[query]);
+      return rows;
+  } catch (err) {
+      console.log(err);
+      throw err;
+  }
 
 }
 
@@ -24,20 +35,21 @@ async function getAlbum(id) {
 
     } catch (err) {
         console.log(err);
+        throw err;
     }
 }
 
 async function createAlbum(user_id,title) {
     try {
       const sql = "INSERT INTO albums (`user_id`, `title`) VALUES(?, ?)";
-      ;
-  
+
       const result = await pool.query(sql,[user_id,title]);
   
       return result[0];
   
     } catch (err) {
       console.log(err);
+      throw err;
     }
   }
   async function deleteAlbum(id) {
@@ -62,4 +74,4 @@ async function createAlbum(user_id,title) {
 
 
 
-module.exports = { getAlbums, getAlbum, createAlbum, deleteAlbum, updateAlbum }
+module.exports = { getAlbums, getAlbum, createAlbum, deleteAlbum, updateAlbum,getByQuery }

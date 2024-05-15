@@ -7,6 +7,7 @@ async function getUsers() {
         return result[0][0];
     } catch (err) {
         console.log(err);
+        throw err;
     }
 
 }
@@ -21,6 +22,7 @@ async function getByQuery(query) {
         return rows;
     } catch (err) {
         console.log(err);
+        throw err;
     }
   
   }
@@ -34,6 +36,7 @@ async function getUser(id) {
         return result[0];
     } catch (err) {
         console.log(err);
+        throw err;
     }
 }
 
@@ -46,6 +49,7 @@ async function getByUsername(username) {
         return result[0][0];
     } catch (err) {
         console.log(err);
+        throw err;
     }
 }
 
@@ -56,6 +60,7 @@ async function getPassword(userId) {
         return result[0][0];
     } catch (err) {
         console.log(err);
+        throw err;
     }
 }
 

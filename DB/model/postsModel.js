@@ -5,11 +5,10 @@ async function getPosts() {
         const sql = 'SELECT * FROM posts';
 
         const [rows, fields] = await pool.query(sql);
-        console.log(rows);
-
         return rows;
     } catch (err) {
         console.log(err);
+        throw err;
     }
 
 }
@@ -23,6 +22,7 @@ async function getByQuery(query) {
       return rows;
   } catch (err) {
       console.log(err);
+      throw err;
   }
 
 }
@@ -36,6 +36,7 @@ async function getPost(id) {
 
     } catch (err) {
         console.log(err);
+        throw err;
     }
 }
 async function createPost(user_id, title, body) {
@@ -49,6 +50,7 @@ async function createPost(user_id, title, body) {
   
     } catch (err) {
       console.log(err);
+      throw err;
     }
   }
   async function deletePost(id) {

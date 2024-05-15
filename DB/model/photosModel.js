@@ -5,12 +5,24 @@ async function getPhotos() {
         const sql = 'SELECT * FROM photos';
 
         const [rows, fields] = await pool.query(sql);
-        console.log(rows);
-
         return rows;
     } catch (err) {
         console.log(err);
+        throw err;
     }
+
+}
+
+async function getByQuery(query) {
+  try {
+      const sql = 'SELECT * FROM photos where album_id=?';
+      const [rows, fields] = await pool.query(sql,[query.album_id]);
+
+      return rows;
+  } catch (err) {
+      console.log(err);
+      throw err;
+  }
 
 }
 
@@ -24,6 +36,7 @@ async function getPhoto(id) {
 
     } catch (err) {
         console.log(err);
+        throw err;
     }
 }
 
@@ -37,6 +50,7 @@ async function createPhoto(album_id, title, url, thumbnailUrl) {
   
     } catch (err) {
       console.log(err);
+      throw err;
     }
   }
   async function deletePhoto(id) {
@@ -52,7 +66,7 @@ async function createPhoto(album_id, title, url, thumbnailUrl) {
     try {
       const sql = `UPDATE photos SET title = ?, url = ?, thumbnailUrl = ? WHERE id = ?`;
       const result = await pool.query(sql, [title, url, thumbnailUrl, id]);
-      return result;
+      return await getPhoto(id);    
     } catch (err) {
       console.error('Error updating photo:', err);
       throw err;
@@ -61,4 +75,4 @@ async function createPhoto(album_id, title, url, thumbnailUrl) {
 
 
 
-module.exports = { getPhotos, getPhoto, createPhoto, deletePhoto, updatePhoto }
+module.exports = { getPhotos, getPhoto, createPhoto, deletePhoto, updatePhoto,getByQuery }

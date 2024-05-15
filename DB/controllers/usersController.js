@@ -23,24 +23,14 @@ async function login(username, password) {
         if (!user) {
             throw new Error('User not exist');
         } else {
-            const passwordUser = await model.getPassword(user.id);
-            // if (password == passwordUser.password) {
-            //     return user;
-            // }
-            // else {
-            //     throw new Error('Passwords are not matching');
-            // }
-            console.log("pas",passwordUser)
-            const response=bcrypt.compare(password,passwordUser.password)
-                if(response)
-                {
-                    console.log("u",user)
-                    return user;
-                }else{
-                    throw new Error('Passwords are not matching');
-                }
-           
-
+            const passwordUser = await model.getPassword(user.id)
+            const response = bcrypt.compare(password, passwordUser.password)
+            if (response) {
+                console.log("u", user)
+                return user;
+            } else {
+                throw new Error('Passwords are not matching');
+            }
         }
     } catch (err) {
         throw err;

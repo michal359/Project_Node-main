@@ -24,12 +24,4 @@ async function getById(id){
     }
 }
 
-// async function deletePassword(id){
-//     try{
-//         return model.deletePassword(id);
-//     }catch(err){
-//         throw err;
-//     }
-// }
-
 module.exports = {create, getAll, getById}

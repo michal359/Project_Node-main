@@ -15,7 +15,7 @@ function Albums() {
     if (UserData.id) {
       const fetchUserAlbums = async () => {
         try {
-          serverRequests('GET', `albums?userId=${UserData.id}`, null).then((albumsData) => {
+          serverRequests('GET', `albums?user_id=${UserData.id}`, null).then((albumsData) => {
             setUserAlbums(albumsData);
             setFilteredAlbums(albumsData);
           })

@@ -83,11 +83,13 @@ function Comments({ postId, UserData }) {
             alert('You cannot edit someone`s comments! 😈')
         }
     }
-
-    const handleSaveEditedComment = async (commentIdToEdit) => {
+  
+    const handleSaveEditedComment = async (commentIdToEdit) => { 
+            
+        postId=commentIdToEdit;
 
         const updateComment = {
-            post_id: commentIdToEdit,
+            post_id: postId,
             name: editedCommentName,
             email: UserData.email,
             body: editedCommentBody,
@@ -95,14 +97,18 @@ function Comments({ postId, UserData }) {
 
         try {
              serverRequests('PUT', `comments/${commentIdToEdit}`, updateComment).then((updatedComments)=>{
-                comments.map((comment) =>
+                setComments(comments.map((comment) =>
                     comment.id === commentIdToEdit ? { ...comment, name: editedCommentName, body: editedCommentBody } : comment
-                );
-                setComments([...comments, updatedComments]);
-                setEditingCommentId(null);
+                ))
+                setComments((prevComments) =>
+                    prevComments.map((comment) =>
+                    comment.id === commentIdToEdit ? { ...comment, updatedComments } : comment
+                  )
+               );                setEditingCommentId(null);
                 setEditedCommentName('');
                 setEditedCommentBody('');
                 setClickEdit(null)
+
             })
     
         } catch (error) {

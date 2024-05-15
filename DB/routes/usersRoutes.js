@@ -1,40 +1,58 @@
 const express = require("express");
 const router = express.Router();
 const controller = require('../controllers/usersController')
-const cors = require('cors'); 
+const cors = require('cors');
 router.use(cors());
 
 router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
 router.get("/", async (req, res) => {
-    res.send(await controller.getByQuery(req.query));
+    try {
+        res.send(await controller.getByQuery(req.query));
+    } catch (err) {
+        res.status(500).send(err);
+    }
 })
 
 router.get("/:id", async (req, res) => {
-    const id = req.params.id;
-    const user = await controller.getById(id);
-    res.send(user)
+    try {
+        const id = req.params.id;
+        const user = await controller.getById(id);
+        res.send(user)
+    } catch (err) {
+        res.status(500).send(err);
+    }
 });
 
-router.post("/", async(req, res) => {
-    const response=await controller.create(req.body.username, req.body.password)
-    console.log("insertId",response)
-    res.send(await controller.getById(response));
+router.post("/", async (req, res) => {
+    try {
+        const response = await controller.create(req.body.username, req.body.password)
+        res.send(await controller.getById(response));
+    } catch (err) {
+        res.status(500).send(err);
+    }
 });
 
 router.put("/:id", async (req, res) => {
-    const id = req.params.id; 
-    console.log("id",id)
-    const response = await controller.update(id, req.body.name, req.body.email, req.body.street, req.body.city, req.body.phone);
-    res.send(response);
+    try {
+        const id = req.params.id;
+        const response = await controller.update(id, req.body.name, req.body.email, req.body.street, req.body.city, req.body.phone);
+        res.send(response);
+    } catch (err) {
+        res.status(500).send(err);
+    }
 });
 
 
-router.delete("/:id", async(req, res) => {
-    const id = req.params.id;
-    const response=await controller.deleteUser(id);
-    res.send();
+router.delete("/:id", async (req, res) => {
+    try {
+        const id = req.params.id;
+        const response = await controller.deleteUser(id);
+        res.send();
+    } catch (err) {
+        res.status(500).send(err);
+    }
 });
 
 module.exports = router

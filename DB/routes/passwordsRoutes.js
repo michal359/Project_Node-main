@@ -6,20 +6,21 @@ router.use(express.json());
 router.use(express.urlencoded({ extended: true }));
 
 router.get("/", async (req, res) => {
-    res.send(await controller.getAll());
+    try {
+        res.send(await controller.getAll());
+    } catch (err) {
+        res.status(500).send(err);
+    }
 })
 
 router.get("/:id", async (req, res) => {
-    const id = req.params.id;
-    const password = await controller.getById(id);
-    res.send(password)
+    try {
+        const id = req.params.id;
+        const password = await controller.getById(id);
+        res.send(password)
+    } catch (err) {
+        res.status(500).send(err);
+    }
 });
-
-// router.delete("/:id", async(req, res) => {
-//     const id = req.params.id;
-//     const response=await controller.deletePassword(id);
-//     res.send();
-// });
-
 module.exports = router
 

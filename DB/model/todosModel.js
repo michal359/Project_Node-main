@@ -5,11 +5,10 @@ async function getTodos() {
         const sql = 'SELECT * FROM todos';
 
         const [rows, fields] = await pool.query(sql);
-        console.log(rows);
-
         return rows;
     } catch (err) {
         console.log(err);
+        throw err;
     }
 
 }
@@ -18,11 +17,11 @@ async function getByQuery(query) {
       const sql = 'SELECT * FROM todos where ?';
 
       const [rows, fields] = await pool.query(sql,[query]);
-      console.log(rows);
 
       return rows;
   } catch (err) {
       console.log(err);
+      throw err;
   }
 
 }
@@ -33,6 +32,7 @@ async function getTodo(id) {
         return result[0][0];
     } catch (err) {
         console.log(err);
+        throw err;
     }
 }
 async function createTodo(user_id, title, completed) {
@@ -42,7 +42,9 @@ async function createTodo(user_id, title, completed) {
       return result[0];
     } catch (err) {
       console.log(err);
+      throw err;
     }
+
   }
   async function deleteTodo(id) {
     try {
